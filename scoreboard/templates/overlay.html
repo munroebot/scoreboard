@@ -23,16 +23,15 @@
 
   </head>
   <body>
-    <table class="table table-dark table-striped">
-        {% for score in scores %}
+    <table class="table table-dark table-striped" style="opacity: 0.4;">
         <tbody>
           <tr>
+            {% for score in scores %}
             <td scope="col">{{ score.label }}</td>
             <td scope="col">{{ score.score }}</td>
+            {% endfor %}
           </tr>
         </tbody>
-        {% endfor %}
-        <th>Period:</th><th></th>
       </table>
       
 </body>
