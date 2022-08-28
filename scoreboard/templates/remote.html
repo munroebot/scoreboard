@@ -9,7 +9,6 @@
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 
-
     <style>
 body {
 	font-family: Verdana, Arial, Helvetica,sans-serif;
@@ -79,16 +78,48 @@ textarea {
 .message {
     color:#009933;
 }
-    </style>
+
+</style>
+
+<script>
+
+    $(document).ready (
+        function() {
+
+            $("#usinc").bind("click", function() {
+                data = {'team':"us","operation":"inc"};
+                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+            })
+
+            $("#usdec").bind("click", function() {
+                data = {'team':"us","operation":"dec"};
+                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+            })
+
+            $("#theminc").bind("click", function() {
+                data = {'team':"them","operation":"inc"};
+                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+            })
+
+            $("#themdec").bind("click", function() {
+                data = {'team':"them","operation":"dec"};
+                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+            })
+
+        });
+        
+
+
+</script>
 
 </head>
 <body>
   <br/>
   <table name="field-layout" id="field-layout" class="field-layout">
     <tbody>
-      <tr><th>VGK</th><td><button type="button" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" class="btn btn-secondary btn-lg">-1</button></td></tr>
-      <tr><th>LVSTM</th><td><button type="button" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" class="btn btn-secondary btn-lg">-1</button></td></tr>
-      <tr><td colspan="3"><a href=#>Edit Teams</a> - <a href=#>Reset Scoreboard</a></td></tr>
+      <tr><th>VGK</th><td><button type="button" id="usinc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="usdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
+      <tr><th>LVSTM</th><td><button type="button" id="theminc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="themdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
+      <tr><td colspan="3"><a href=#>Edit Teams</a> - <a href=# id="resetscore">Reset Scoreboard</a></td></tr>
     </tbody>
     </table>
 </body>
