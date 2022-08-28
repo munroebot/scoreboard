@@ -16,10 +16,20 @@ def index():
 def remote():
     return render_template('remote.html')
 
+@app.route('/setperiod', methods=['POST'])
+def set_period():
+    conn = get_db_connection()
+    period = request.form.get('period')
+    sql = "update scores set period = '%s'" % (period,)
+    p = conn.execute(sql)
+    conn.commit()
+    conn.close()
+    return jsonify({"status":200})
+
 @app.route('/twitchoverlay', methods=['GET'])
 def twitchoverlay():
     conn = get_db_connection()
-    sql = "select team, label, score from scores"
+    sql = "select team, label, score, period from scores"
     scores = conn.execute(sql).fetchall()
     conn.close()
     return render_template('overlay.html',scores=scores)
@@ -58,11 +68,11 @@ def update_score():
 @app.route('/score/', methods=['GET'])
 def get_score():
     conn = get_db_connection()
-    sql = "select team, label, score from scores"
+    sql = "select team, label, score, period from scores"
     scores = conn.execute(sql).fetchall()
     conn.close()
     us = scores[0]
     them = scores[1]
 
-    return jsonify({"us":[us['label'],us['score']],"them":[them['label'],them['score']]})
+    return jsonify({"us":[us['label'],us['score'],us['period']],"them":[them['label'],them['score'],them['period']]})
 

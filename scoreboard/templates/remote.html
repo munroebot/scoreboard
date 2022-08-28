@@ -44,10 +44,12 @@ textarea {
 }
 
 .field-layout {
-    width: 300px;
-    border: 1px solid #ccc;
-	  border-collapse: collapse;
-	  margin-bottom:25px;
+    width: 350px;
+    border: 2px solid #ccc;
+	border-collapse: collapse;
+    position: absolute;
+    bottom:250px;
+
 }
 
 .field-layout td {
@@ -63,20 +65,12 @@ textarea {
 }
 
 .field-layout th {
-	text-align:center;
+	text-align:right;
 	padding-right:5px;
 	background-color:#eee;
 	border: 1px solid #ccc;
 	font-size:36px;
-  width:200px;
-}
-
-.help {
-    color:#ccc;
-}
-
-.message {
-    color:#009933;
+    width:250px;
 }
 
 </style>
@@ -85,42 +79,121 @@ textarea {
 
     $(document).ready (
         function() {
+        
+            // Grab score on page load
+            $.ajax({
+                url: '/score/',
+                success:function(data){
+                    $('#us').text(data.us[1]);
+                    $('#them').text(data.them[1]);
+                }
+            });
+
+            setInterval(function(){
+                $.ajax({
+			        url: '/score/',
+			        success:function(data){
+				        $('#us').text(data.us[1]);
+                        $('#them').text(data.them[1]);
+			        }
+			    });
+
+            }, 10000);
 
             $("#usinc").bind("click", function() {
                 data = {'team':"us","operation":"inc"};
+                x = $('#us').text();
+                $('#us').text(Number(x) + 1);
                 $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
-            })
+            });
 
             $("#usdec").bind("click", function() {
                 data = {'team':"us","operation":"dec"};
+                x = $('#us').text();
+                $('#us').text(Number(x) - 1);
                 $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
-            })
+            });
 
             $("#theminc").bind("click", function() {
                 data = {'team':"them","operation":"inc"};
+                x = $('#them').text();
+                $('#them').text(Number(x) + 1);
                 $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
-            })
+            });
 
             $("#themdec").bind("click", function() {
                 data = {'team':"them","operation":"dec"};
+                x = $('#them').text();
+                $('#them').text(Number(x) - 1);
                 $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
-            })
+            });
 
+            $("#resetscore").bind("click", function() {
+                $('#us').text("0");
+                $('#them').text("0");
+                $.ajax({type: 'GET', url: '/hardreset'});
+            });
+
+            $("#p1").bind("click", function() {
+                cp = $("#currentPeriod").val();
+                $(cp).removeClass('btn-primary').addClass('btn-secondary');
+                $("#p1").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#p1");
+                data = {'period':"P1"};
+                $.ajax({type: 'POST', url: '/setperiod', data: data});
+            });
+
+            $("#p2").bind("click", function() {
+                cp = $("#currentPeriod").val();
+                $(cp).removeClass('btn-primary').addClass('btn-secondary');
+                $("#p2").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#p2");
+                data = {'period':"P2"};
+                $.ajax({type: 'POST', url: '/setperiod', data: data});
+            });
+            
+            $("#p3").bind("click", function() {
+                cp = $("#currentPeriod").val();
+                $(cp).removeClass('btn-primary').addClass('btn-secondary');
+                $("#p3").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#p3");
+                data = {'period':"P3"};
+                $.ajax({type: 'POST', url: '/setperiod', data: data});
+            });
+
+            $("#ot").bind("click", function() {
+                cp = $("#currentPeriod").val();
+                $(cp).removeClass('btn-primary').addClass('btn-secondary');
+                $("#ot").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#ot");
+                data = {'period':"OT"};
+                $.ajax({type: 'POST', url: '/setperiod', data: data});
+            });
         });
-        
-
 
 </script>
 
 </head>
 <body>
+    
+    <input type="hidden" id="currentPeriod" value="#p1"/>
+
   <br/>
   <table name="field-layout" id="field-layout" class="field-layout">
     <tbody>
-      <tr><th>VGK</th><td><button type="button" id="usinc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="usdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
-      <tr><th>LVSTM</th><td><button type="button" id="theminc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="themdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
-      <tr><td colspan="3"><a href=#>Edit Teams</a> - <a href=# id="resetscore">Reset Scoreboard</a></td></tr>
+      <tr><th>VGK</th><th><span id="us">0</span></th><td><button type="button" id="usinc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="usdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
+      <tr><th>LVSTM</th><th><span id="them">0</span></th><td><button type="button" id="theminc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="themdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
+      <tr>
+        <td colspan="4" style="text-align:left;">
+            <button type="button" class="btn btn-primary"   id="p1">P1</button>
+            <button type="button" class="btn btn-secondary" id="p2">P2</button>
+            <button type="button" class="btn btn-secondary" id="p3">P3</button>
+            <button type="button" class="btn btn-secondary" id="ot">OT</button>
+        </td>
+      </tr>
+      <tr><td colspan="4" style="text-align:left;"><a href="#">More Actions...</a></td></tr>
     </tbody>
+
     </table>
 </body>
 </html>
