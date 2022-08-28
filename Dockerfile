@@ -1,6 +1,6 @@
 
 from amazonlinux:latest
-RUN yum update -y && yum -y install tzdata python3 aws-cli wget jq gzip tar git
+RUN yum update -y && yum -y install tzdata python3 gzip tar git
 
 WORKDIR /opt
 RUN git clone https://github.com/munroebot/scoreboard.git
