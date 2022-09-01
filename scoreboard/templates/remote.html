@@ -10,72 +10,72 @@
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 
     <style>
-body {
-	font-family: Verdana, Arial, Helvetica,sans-serif;
-	font-size:small;
-	padding:10px;
-}
+        body {
+            font-family: Verdana, Arial, Helvetica,sans-serif;
+            font-size:small;
+            padding:10px;
+        }
 
-h2 {
-    color: #006dba;
-    font-weight: normal;
-    font-size: 16px;
-    border-bottom: 2px solid #ccc;
-    width: 800px;
-}
+        h2 {
+            color: #006dba;
+            font-weight: normal;
+            font-size: 16px;
+            border-bottom: 2px solid #ccc;
+            width: 800px;
+        }
 
-select, textarea {
-    background-color: #fcfcfc;
-    border: 1px solid #ccc;
-    font: 11px verdana, arial, helvetica, sans-serif;
-    margin: 2px 0;
-    padding: 2px 4px;
-}
+        select, textarea {
+            background-color: #fcfcfc;
+            border: 1px solid #ccc;
+            font: 11px verdana, arial, helvetica, sans-serif;
+            margin: 2px 0;
+            padding: 2px 4px;
+        }
 
-select {
-   padding: 2px 2px 2px 0;
-}
+        select {
+        padding: 2px 2px 2px 0;
+        }
 
-textarea {
-	width: 100%;
-	height: 300px;
-	vertical-align: top;
-    font: 12px verdana, arial, helvetica, sans-serif;
-}
+        textarea {
+            width: 100%;
+            height: 300px;
+            vertical-align: top;
+            font: 12px verdana, arial, helvetica, sans-serif;
+        }
 
-.field-layout {
-    width: 350px;
-    border: 2px solid #ccc;
-	border-collapse: collapse;
-    position: absolute;
-    bottom:250px;
+        .field-layout {
+            width: 350px;
+            border: 2px solid #ccc;
+            border-collapse: collapse;
+            position: absolute;
+            bottom:250px;
 
-}
+        }
 
-.field-layout td {
-    border: 1px solid #ccc;
-	  padding: 5px;
-	  margin: 5px;
-	  font-size:small;
-}
+        .field-layout td {
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin: 5px;
+            font-size:small;
+        }
 
-.field-layout tr {
-    border: 1px solid #ccc;
-    text-align:center;
-}
+        .field-layout tr {
+            border: 1px solid #ccc;
+            text-align:center;
+        }
 
-.field-layout th {
-	text-align:right;
-	padding-right:5px;
-	background-color:#eee;
-	border: 1px solid #ccc;
-	font-size:36px;
-    width:250px;
-}
+        .field-layout th {
+            text-align:right;
+            padding-right:5px;
+            background-color:#eee;
+            border: 1px solid #ccc;
+            font-size:36px;
+            width:250px;
+        }
 
-</style>
+    </style>
 
-<script>
+    <script>
 
     $(document).ready (
         function() {
@@ -84,6 +84,8 @@ textarea {
             $.ajax({
                 url: '/score/',
                 success:function(data){
+                    $('#uslabel').text(data.us[0]);
+                    $('#themlabel').text(data.them[0]);
                     $('#us').text(data.us[1]);
                     $('#them').text(data.them[1]);
                 }
@@ -93,6 +95,7 @@ textarea {
                 $.ajax({
 			        url: '/score/',
 			        success:function(data){
+                        console.log(data.them[0]);
 				        $('#us').text(data.us[1]);
                         $('#them').text(data.them[1]);
 			        }
@@ -181,8 +184,8 @@ textarea {
   <br/>
   <table name="field-layout" id="field-layout" class="field-layout">
     <tbody>
-      <tr><th>VGK</th><th><span id="us">0</span></th><td><button type="button" id="usinc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="usdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
-      <tr><th>LVSTM</th><th><span id="them">0</span></th><td><button type="button" id="theminc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="themdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
+      <tr><th id="uslabel">VGK</th><th><span id="us">0</span></th><td><button type="button" id="usinc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="usdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
+      <tr><th id="themlabel">VGK</th><th><span id="them">0</span></th><td><button type="button" id="theminc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="themdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
       <tr>
         <td colspan="4" style="text-align:left;">
             <button type="button" class="btn btn-primary"   id="p1">P1</button>
@@ -191,7 +194,7 @@ textarea {
             <button type="button" class="btn btn-secondary" id="ot">OT</button>
         </td>
       </tr>
-      <tr><td colspan="4" style="text-align:left;"><a href="#">More Actions...</a></td></tr>
+      <tr><td colspan="4" style="text-align:left;"><a href="/more">More Actions...</a></td></tr>
     </tbody>
 
     </table>

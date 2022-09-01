@@ -8,4 +8,4 @@ CREATE TABLE scores (
 );
 
 INSERT INTO scores(team, label, score, period) values ("us","VGK",0,"P1");
-INSERT INTO scores(team, label, score, period) values ("them","LVSTM",0,"p1");
+INSERT INTO scores(team, label, score, period) values ("them","THEM",0,"p1");

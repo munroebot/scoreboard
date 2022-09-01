@@ -34,9 +34,33 @@ def twitchoverlay():
     conn.close()
     return render_template('overlay.html',scores=scores)
 
-@app.route('/editlabel', methods=['GET'])
+@app.route('/more', methods=['GET'])
+def moreactions():
+    return render_template('more.html')
+
+@app.route('/editteams', methods=['GET', 'POST'])
 def edit_label():
-    pass
+    if request.method == "GET":
+        conn = get_db_connection()
+        sql = "select team, label from scores"
+        teams = conn.execute(sql).fetchall()
+        conn.close()
+        return render_template('edit.html',teams=teams)
+    else:
+        labelus = request.form.get('us')
+        labelthem = request.form.get('them')
+
+        sql1 = "update scores set label='%s' where team='us'" % (labelus)
+        sql2 = "update scores set label='%s' where team='them'" % (labelthem)
+
+        conn = get_db_connection()
+
+        conn.execute(sql1)
+        conn.execute(sql2)
+
+        conn.commit()
+        conn.close()
+        return render_template('remote.html')
 
 @app.route('/hardreset', methods=['GET'])
 def hardreset():
