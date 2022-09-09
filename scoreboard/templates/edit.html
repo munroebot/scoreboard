@@ -79,12 +79,6 @@
         $(document).ready (
         function() {
         
-            $("#usinc").bind("click", function() {
-                data = {'team':"us","operation":"inc"};
-                x = $('#us').text();
-                $('#us').text(Number(x) + 1);
-                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
-            });
         });
 
     </script>

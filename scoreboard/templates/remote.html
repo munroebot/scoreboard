@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>The Remote</title>
+    <title>Mobile Remote</title>
   
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
@@ -20,7 +20,7 @@
             color: #006dba;
             font-weight: normal;
             font-size: 16px;
-            border-bottom: 2px solid #ccc;
+            border-bOTtom: 2px solid #ccc;
             width: 800px;
         }
 
@@ -48,7 +48,7 @@
             border: 2px solid #ccc;
             border-collapse: collapse;
             position: absolute;
-            bottom:250px;
+            bOTtom:250px;
 
         }
 
@@ -82,20 +82,22 @@
         
             // Grab score on page load
             $.ajax({
-                url: '/score/',
+                url: '/score',
                 success:function(data){
                     $('#uslabel').text(data.us[0]);
                     $('#themlabel').text(data.them[0]);
                     $('#us').text(data.us[1]);
                     $('#them').text(data.them[1]);
+                    cp = '#' + data.us[2];
+                    $("#currentPeriod").val(cp);
+                    $(cp).removeClass('btn-secondary').addClass('btn-primary');
                 }
             });
 
             setInterval(function(){
                 $.ajax({
-			        url: '/score/',
+			        url: '/score',
 			        success:function(data){
-                        console.log(data.them[0]);
 				        $('#us').text(data.us[1]);
                         $('#them').text(data.them[1]);
 			        }
@@ -137,38 +139,38 @@
                 $.ajax({type: 'GET', url: '/hardreset'});
             });
 
-            $("#p1").bind("click", function() {
+            $("#P1").bind("click", function() {
                 cp = $("#currentPeriod").val();
                 $(cp).removeClass('btn-primary').addClass('btn-secondary');
-                $("#p1").removeClass('btn-secondary').addClass('btn-primary');
-                $("#currentPeriod").val("#p1");
+                $("#P1").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#P1");
                 data = {'period':"P1"};
                 $.ajax({type: 'POST', url: '/setperiod', data: data});
             });
 
-            $("#p2").bind("click", function() {
+            $("#P2").bind("click", function() {
                 cp = $("#currentPeriod").val();
                 $(cp).removeClass('btn-primary').addClass('btn-secondary');
-                $("#p2").removeClass('btn-secondary').addClass('btn-primary');
-                $("#currentPeriod").val("#p2");
+                $("#P2").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#P2");
                 data = {'period':"P2"};
                 $.ajax({type: 'POST', url: '/setperiod', data: data});
             });
             
-            $("#p3").bind("click", function() {
+            $("#P3").bind("click", function() {
                 cp = $("#currentPeriod").val();
                 $(cp).removeClass('btn-primary').addClass('btn-secondary');
-                $("#p3").removeClass('btn-secondary').addClass('btn-primary');
-                $("#currentPeriod").val("#p3");
+                $("#P3").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#P3");
                 data = {'period':"P3"};
                 $.ajax({type: 'POST', url: '/setperiod', data: data});
             });
 
-            $("#ot").bind("click", function() {
+            $("#OT").bind("click", function() {
                 cp = $("#currentPeriod").val();
                 $(cp).removeClass('btn-primary').addClass('btn-secondary');
-                $("#ot").removeClass('btn-secondary').addClass('btn-primary');
-                $("#currentPeriod").val("#ot");
+                $("#OT").removeClass('btn-secondary').addClass('btn-primary');
+                $("#currentPeriod").val("#OT");
                 data = {'period':"OT"};
                 $.ajax({type: 'POST', url: '/setperiod', data: data});
             });
@@ -179,7 +181,7 @@
 </head>
 <body>
     
-    <input type="hidden" id="currentPeriod" value="#p1"/>
+    <input type="hidden" id="currentPeriod" value="#P1"/>
 
   <br/>
   <table name="field-layout" id="field-layout" class="field-layout">
@@ -188,10 +190,10 @@
       <tr><th id="themlabel">VGK</th><th><span id="them">0</span></th><td><button type="button" id="theminc" class="btn btn-primary btn-lg">+1</button></td><td><button type="button" id="themdec" class="btn btn-secondary btn-lg">-1</button></td></tr>
       <tr>
         <td colspan="4" style="text-align:left;">
-            <button type="button" class="btn btn-primary"   id="p1">P1</button>
-            <button type="button" class="btn btn-secondary" id="p2">P2</button>
-            <button type="button" class="btn btn-secondary" id="p3">P3</button>
-            <button type="button" class="btn btn-secondary" id="ot">OT</button>
+            <button type="button" class="btn btn-secondary" id="P1">P1</button>
+            <button type="button" class="btn btn-secondary" id="P2">P2</button>
+            <button type="button" class="btn btn-secondary" id="P3">P3</button>
+            <button type="button" class="btn btn-secondary" id="OT">OT</button>
         </td>
       </tr>
       <tr><td colspan="4" style="text-align:left;"><a href="/more">More Actions...</a></td></tr>
