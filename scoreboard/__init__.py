@@ -1,42 +1,29 @@
 from flask import Flask, request, session, jsonify, render_template, redirect
-import sqlite3
+import bcrypt, sqlite3
 
 app = Flask(__name__)
-
-def init_db():
-    conn = get_db_connection()
-    with open('create.sql') as f:
-        conn.executescript(f.read())    
-        conn.commit()
-        conn.close()
 
 def get_db_connection():
     conn = sqlite3.connect('scoreboard.db')
     conn.row_factory = sqlite3.Row
     return conn
+    
+def init_db():
+    with open('create.sql') as f:
+        conn = get_db_connection()
+        conn.executescript(f.read())    
+        conn.commit()
+        conn.close()
 
-def check_password(pin):
+def get_scores():
+    conn = get_db_connection()
+    sql = "select team, label, score, period from scores"
+    scores = conn.execute(sql).fetchall()
+    conn.close()
+    return scores
 
-    with app.app_context():
-
-        try:
-            conn = get_db_connection()
-            sql = "select pin from pins"
-            pins = conn.execute(sql).fetchall()
-
-            entries = cur.fetchall()
-            hashed_password = entries[0][0].encode('utf-8')
-
-            if bcrypt.hashpw(pin.encode('utf-8'), hashed_password) == hashed_password:
-                passwords_match = True
-            else:
-                passwords_match = False
-
-        except Exception as e:
-            print(e)
-            passwords_match = False
-
-        return passwords_match
+def check_password():
+    return True
 
 #
 ## Startup
@@ -54,17 +41,13 @@ def index():
 def remote():
     return render_template('remote.html')
 
-@app.route('/twitchoverlay', methods=['GET'])
-def twitchoverlay():
-    conn = get_db_connection()
-    sql = "select team, label, score, period from scores"
-    scores = conn.execute(sql).fetchall()
-    conn.close()
-    return render_template('overlay.html',scores=scores)
-
 @app.route('/more', methods=['GET'])
 def moreactions():
     return render_template('more.html')
+
+@app.route('/twitchoverlay', methods=['GET'])
+def twitchoverlay():
+    return render_template('overlay.html',scores=get_scores())
 
 @app.route('/editteams', methods=['GET', 'POST'])
 def edit_label():
@@ -90,7 +73,6 @@ def edit_label():
         conn.close()
         return redirect('remote')
 
-
 @app.route('/login', methods=['GET','POST'])
 def login():
 
@@ -106,20 +88,13 @@ def login():
             error = 'Invalid credentials'
         
         return render_template('login.html',errors=error)
-            
 
 #
 ## API Calls
 #
-@app.route('/hardreset', methods=['GET'])
+@app.route('/hardreset', methods=['GET', 'POST'])
 def hardreset():
-    conn = get_db_connection()
-    with open('create.sql') as f:
-        conn.executescript(f.read())    
-    
-    conn.commit()
-    conn.close()
-    
+    init_db()
     return jsonify({"status":200})
 
 @app.route('/setperiod', methods=['POST'])
