@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS scores;
+DROP TABLE IF EXISTS pin;
 
 CREATE TABLE scores (
     team TEXT,

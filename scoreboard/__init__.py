@@ -3,6 +3,13 @@ import sqlite3
 
 app = Flask(__name__)
 
+def init_db():
+    conn = get_db_connection()
+    with open('create.sql') as f:
+        conn.executescript(f.read())    
+        conn.commit()
+        conn.close()
+
 def get_db_connection():
     conn = sqlite3.connect('scoreboard.db')
     conn.row_factory = sqlite3.Row
@@ -30,6 +37,11 @@ def check_password(pin):
             passwords_match = False
 
         return passwords_match
+
+#
+## Startup
+#
+init_db()
 
 #
 ## Routes
