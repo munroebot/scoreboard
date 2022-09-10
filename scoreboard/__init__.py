@@ -5,7 +5,7 @@ from functools import wraps
 
 app = Flask(__name__)
 
-app.secret_key = bcrypt.gensalt()
+app.secret_key = os.environ['SESSION_KEY']
 
 def get_db_connection():
     conn = sqlite3.connect('scoreboard.db')
