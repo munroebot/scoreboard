@@ -57,6 +57,30 @@ init_db()
 def index():
     return jsonify({"status":200})
 
+@app.route('/overlay', methods=['GET'])
+def streaming_overlay():
+    return render_template('overlay.html', scores=get_scores())
+
+@app.route('/login', methods=['GET'])
+def login():
+    return render_template("login.html")
+
+@app.route('/login', methods=['POST'])
+def login_post():
+    pin = request.form.get('pin')
+    if verify_pin(pin) == True:
+        session['logged_in'] = True
+        return redirect("/remote")
+    else:
+        session['logged_in'] = False
+        error = 'Invalid credentials'
+        return render_template('login.html',errors=error)
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
+
 @app.route('/remote', methods=['GET'])
 @login_required
 def remote():
@@ -67,25 +91,23 @@ def remote():
 def more_actions():
     return render_template('more.html')
 
-@app.route('/twitchoverlay', methods=['GET'])
-def twitch_overlay():
-    return render_template('overlay.html',scores=get_scores())
-
-@app.route('/editteams', methods=['GET', 'POST'])
+@app.route('/teams', methods=['GET'])
 @login_required
-def edit_label():
-    if request.method == "GET":
-        conn = get_db_connection()
-        sql = "select team, label from scores"
-        teams = conn.execute(sql).fetchall()
-        conn.close()
-        return render_template('edit.html',teams=teams)
-    else:
-        labelus = request.form.get('us')
-        labelthem = request.form.get('them')
+def get_labels():
+    conn = get_db_connection()
+    sql = "select team, label from scores"
+    teams = conn.execute(sql).fetchall()
+    conn.close()
+    return render_template('edit.html',teams=teams)
 
-        sql1 = "update scores set label='%s' where team='us'" % (labelus)
-        sql2 = "update scores set label='%s' where team='them'" % (labelthem)
+@app.route('/teams', methods=['POST'])
+@login_required
+def edit_labels():
+        label_us = request.form.get('us')
+        label_them = request.form.get('them')
+
+        sql1 = "update scores set label='%s' where team='us'" % (label_us)
+        sql2 = "update scores set label='%s' where team='them'" % (label_them)
 
         conn = get_db_connection()
 
@@ -94,28 +116,8 @@ def edit_label():
 
         conn.commit()
         conn.close()
+
         return redirect('remote')
-
-@app.route('/login', methods=['GET','POST'])
-def login():
-
-    if request.method == "GET":
-        return render_template("login.html")
-    else:
-        pin = request.form.get('pin')
-        if verify_pin(pin) == True:
-            session['logged_in'] = True
-            return redirect("/remote")
-        else:
-            session['logged_in'] = False
-            error = 'Invalid credentials'
-        
-        return render_template('login.html',errors=error)
-
-@app.route('/logout')
-def logout():
-   session.pop('logged_in', None)
-   return redirect(url_for('login'))
 
 #
 ## API Calls

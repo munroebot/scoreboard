@@ -1,0 +1,1 @@
+Scoreboard overlay for live streaming two-team (hockey, soccer, basketball) style sporting events
