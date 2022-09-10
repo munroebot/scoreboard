@@ -62,7 +62,7 @@ def index():
 @app.route('/remote', methods=['GET'])
 @login_required
 def remote():
-    print(session["logged_in"]) 
+    print("YO: " + session["logged_in"]) 
     return render_template('remote.html')
 
 @app.route('/more', methods=['GET'])
