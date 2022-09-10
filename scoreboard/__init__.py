@@ -1,4 +1,4 @@
-import bcrypt, sqlite3
+import bcrypt, sqlite3, os
 
 from flask import Flask, request, session, jsonify, render_template, redirect, url_for
 from functools import wraps
