@@ -109,28 +109,28 @@
                 data = {'team':"us","operation":"inc"};
                 x = $('#us').text();
                 $('#us').text(Number(x) + 1);
-                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+                $.ajax({type: 'POST', url: '/score', data: data});
             });
 
             $("#usdec").bind("click", function() {
                 data = {'team':"us","operation":"dec"};
                 x = $('#us').text();
                 $('#us').text(Number(x) - 1);
-                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+                $.ajax({type: 'POST', url: '/score', data: data});
             });
 
             $("#theminc").bind("click", function() {
                 data = {'team':"them","operation":"inc"};
                 x = $('#them').text();
                 $('#them').text(Number(x) + 1);
-                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+                $.ajax({type: 'POST', url: '/score', data: data});
             });
 
             $("#themdec").bind("click", function() {
                 data = {'team':"them","operation":"dec"};
                 x = $('#them').text();
                 $('#them').text(Number(x) - 1);
-                $.ajax({type: 'POST', url: '/scoreboard/update', data: data});
+                $.ajax({type: 'POST', url: '/score', data: data});
             });
 
             $("#resetscore").bind("click", function() {

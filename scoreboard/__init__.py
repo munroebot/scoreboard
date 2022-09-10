@@ -1,7 +1,12 @@
-from flask import Flask, request, session, jsonify, render_template, redirect
 import bcrypt, sqlite3
 
+from flask import Flask, request, session, jsonify, render_template, redirect, url_for
+from functools import wraps
+
+
 app = Flask(__name__)
+
+app.secret_key = bcrypt.gensalt()
 
 def get_db_connection():
     conn = sqlite3.connect('scoreboard.db')
@@ -22,8 +27,25 @@ def get_scores():
     conn.close()
     return scores
 
-def check_password():
-    return True
+def verify_pin(pin=None):
+    conn = get_db_connection()
+    sql = "select pin from pins"
+    hashed_pins = conn.execute(sql).fetchall()
+    hashed_pin = hashed_pins[0]['pin'].encode()
+
+    if bcrypt.checkpw(pin.encode(), hashed_pin):
+        print(pin)
+        return True
+    else:
+        return False
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get('logged_in') == None:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 #
 ## Startup
@@ -38,18 +60,21 @@ def index():
     return jsonify({"status":200})
 
 @app.route('/remote', methods=['GET'])
-def remote():
+@login_required
+def remote():    
     return render_template('remote.html')
 
 @app.route('/more', methods=['GET'])
-def moreactions():
+@login_required
+def more_actions():
     return render_template('more.html')
 
 @app.route('/twitchoverlay', methods=['GET'])
-def twitchoverlay():
+def twitch_overlay():
     return render_template('overlay.html',scores=get_scores())
 
 @app.route('/editteams', methods=['GET', 'POST'])
+@login_required
 def edit_label():
     if request.method == "GET":
         conn = get_db_connection()
@@ -80,7 +105,7 @@ def login():
         return render_template("login.html")
     else:
         pin = request.form.get('pin')
-        if check_password(pin) == True:
+        if verify_pin(pin) == True:
             session['logged_in'] = True
             return redirect("/remote")
         else:
@@ -89,11 +114,17 @@ def login():
         
         return render_template('login.html',errors=error)
 
+@app.route('/logout')
+def logout():
+   # remove the username from the session if it is there
+   session.pop('logged_in', None)
+   return redirect(url_for('login'))
+
 #
 ## API Calls
 #
 @app.route('/hardreset', methods=['GET', 'POST'])
-def hardreset():
+def hard_reset():
     init_db()
     return jsonify({"status":200})
 
@@ -107,7 +138,7 @@ def set_period():
     conn.close()
     return jsonify({"status":200})
 
-@app.route('/scoreboard/update', methods=['POST'])
+@app.route('/score', methods=['POST'])
 def update_score():
     team = request.form.get('team')
     operation = request.form.get('operation')
