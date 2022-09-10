@@ -3,7 +3,6 @@ import bcrypt, sqlite3
 from flask import Flask, request, session, jsonify, render_template, redirect, url_for
 from functools import wraps
 
-
 app = Flask(__name__)
 
 app.secret_key = bcrypt.gensalt()
@@ -34,7 +33,6 @@ def verify_pin(pin=None):
     hashed_pin = hashed_pins[0]['pin'].encode()
 
     if bcrypt.checkpw(pin.encode(), hashed_pin):
-        print(pin)
         return True
     else:
         return False
@@ -62,7 +60,6 @@ def index():
 @app.route('/remote', methods=['GET'])
 @login_required
 def remote():
-    print("YO: " + str(session["logged_in"]))
     return render_template('remote.html')
 
 @app.route('/more', methods=['GET'])
@@ -117,7 +114,6 @@ def login():
 
 @app.route('/logout')
 def logout():
-   # remove the username from the session if it is there
    session.pop('logged_in', None)
    return redirect(url_for('login'))
 
@@ -163,6 +159,18 @@ def get_score():
     conn.close()
     us = scores[0]
     them = scores[1]
-
-    return jsonify({"us":[us['label'],us['score'],us['period']],"them":[them['label'],them['score'],them['period']]})
+    
+    payload = {
+        "us":[
+            us['label'],
+            us['score'],
+            us['period']
+        ],
+        "them":[
+            them['label'],
+            them['score'],
+            them['period']
+        ]
+    }
+    return jsonify(payload)
 
