@@ -72,9 +72,9 @@ def login_post():
         session['logged_in'] = True
         return redirect("/remote")
     else:
-        session['logged_in'] = False
+        session['logged_in'] = None
         error = 'Invalid credentials'
-        return render_template('login.html',errors=error)
+        return render_template('login.html', errors=error)
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -98,7 +98,7 @@ def get_labels():
     sql = "select team, label from scores"
     teams = conn.execute(sql).fetchall()
     conn.close()
-    return render_template('edit.html',teams=teams)
+    return render_template('edit.html', teams=teams)
 
 @app.route('/teams', methods=['POST'])
 @login_required
@@ -141,7 +141,7 @@ def set_period():
 def update_score():
     team = request.form.get('team')
     operation = request.form.get('operation')
-
+    
     if (operation == "inc"):
         sql = 'update scores set score = (score + 1) where team = "%s"' % (team,)
     else:
@@ -155,10 +155,13 @@ def update_score():
 
 @app.route('/score', methods=['GET'])
 def get_score():
-    conn = get_db_connection()
+
     sql = "select team, label, score, period from scores"
+
+    conn = get_db_connection()
     scores = conn.execute(sql).fetchall()
     conn.close()
+    
     us = scores[0]
     them = scores[1]
     
