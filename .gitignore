@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 build_docker_image.sh
 scoreboard.db
+activate
