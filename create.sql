@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS scores;
 DROP TABLE IF EXISTS pins;
 
-CREATE TABLE scores (
+CREATE TABLE IF NOT EXISTS scores (
     team TEXT,
     label TEXT,
     score INTEGER,
     period TEXT
 );
 
-CREATE TABLE pins (
+CREATE TABLE IF NOT EXISTS pins (
     pin TEXT
 );
 
