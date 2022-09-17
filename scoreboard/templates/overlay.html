@@ -13,7 +13,30 @@
 
     $(document).ready (
       function() {
-        setInterval(function(){location.reload()}, 10000);
+        // Grab score on page load
+        $.ajax({
+          url: '/score',
+          success:function(data){
+            $('#uslabel').text(data.us[0]);
+            $('#themlabel').text(data.them[0]);
+            $('#us').text(data.us[1]);
+            $('#them').text(data.them[1]);
+            $("#currentPeriod").text(data.us[2]);
+          }
+        });
+
+        setInterval(function(){
+          $.ajax({
+			      url: '/score',
+			      success:function(data){
+              $('#uslabel').text(data.us[0]);
+              $('#themlabel').text(data.them[0]);
+              $('#us').text(data.us[1]);
+              $('#them').text(data.them[1]);
+              $("#currentPeriod").text(data.us[2]);
+			      }
+			    });
+        }, 10000);
       });
 
     </script>
@@ -22,11 +45,11 @@
     <table class="table table-dark table-striped-columns" style="width:210px;">
         <tbody>
           <tr>
-            {% for score in scores %}
-            <td scope="col">{{ score.label }}</td>
-            <td scope="col">{{ score.score }}</td>
-            {% endfor %}
-            <td style="text-align:right;color:#00FF00;" scope="col">{{ scores[0].period }}</td>
+            <td scope="col" id="uslabel"></td>
+            <td scope="col" id="us"></td>
+            <td scope="col" id="themlabel"></td>
+            <td scope="col" id="them"></td>
+            <td style="text-align:right;color:#00FF00;" scope="col" id="currentPeriod"></td>
           </tr>
         </tbody>
       </table>
